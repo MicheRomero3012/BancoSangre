@@ -6,7 +6,7 @@
 
 ### Clonar el repositorio con todas sus ramas remotas
 
-```bash
+
 git clone --branch main https://github.com/MicheRomero3012/BancoSangre.git
 
     Esto descarga el repositorio y te coloca directamente en la rama main.
@@ -171,4 +171,4 @@ exit()
 O Ctrl + D (Linux/Mac) | Ctrl + Z + Enter (Windows)
 
     📌 Manual de instalación y configuración del Proyecto BancoSangre.
-    Desarrollado por el equipo 3 — @michee 💻❤️
+    Desarrollado por el equipo 3 — @MicheRomero3012 & dalia20031994 💻❤️
