@@ -37,16 +37,21 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    
     'rest_framework',
+    'rest_framework.authtoken',
+    
+    'corsheaders',  # lo agregaste para las solicitudes del frontend
+
     'usuario',
     'rol',
-    'corsheaders',# lo agrege para las solicitudes del fron
     'municipio',
     'colonia',
     'coordenada',
     'direccion',
     'donador',
 ]
+
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',# lo agrege para las solicitudes del fron
@@ -88,7 +93,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'bancodb',
         'USER': 'postgres',
-        'PASSWORD': '2003',
+        'PASSWORD': '689447',
         'HOST': 'localhost',
         'PORT': '5432',
     }
@@ -154,4 +159,12 @@ CORS_ALLOW_HEADERS = [
     'x-csrftoken',
     'x-requested-with',
 ]
-
+#para los roles y permisos 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+}

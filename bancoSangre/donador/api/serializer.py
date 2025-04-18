@@ -1,8 +1,14 @@
 import re
 from rest_framework import serializers
 from donador.models import Donador
+from usuario.models import Usuario  
 
 class DonadorSerializer(serializers.ModelSerializer):
+    #solo se daran de lata los que tengan el rol 2: donador
+    usuario = serializers.PrimaryKeyRelatedField(
+        queryset=Usuario.objects.filter(rol__nombre="donador")
+    )
+
     class Meta:
         model = Donador
         fields = '__all__'
@@ -18,8 +24,8 @@ class DonadorSerializer(serializers.ModelSerializer):
         return value
 
     def validate_apellidoM(self, value):
-        if not re.match(r'^[A-Za-zÁÉÍÓÚÑáéíóúñ\s]+$', value):
-            raise serializers.ValidationError("El apellido materno solo debe contener letras y espacios.")
+        if value and not re.match(r'^[A-Za-zÁÉÍÓÚÑáéíóúñ\s]+$', value):
+            raise serializers.ValidationError("El apellido materno solo debe contener letras y espacios si se proporciona.")
         return value
 
     def validate_tipoSangre(self, value):

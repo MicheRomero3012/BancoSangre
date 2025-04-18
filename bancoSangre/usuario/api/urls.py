@@ -3,6 +3,6 @@ from usuario.api.views import UsuarioViewSet
 
 router = DefaultRouter()
 router.register('usuarios', UsuarioViewSet, basename='usuario')  
-urlpatterns = router.urls
+urlpatterns = []
 
 

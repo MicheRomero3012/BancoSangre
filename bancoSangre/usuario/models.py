@@ -1,5 +1,5 @@
 from django.db import models
-from rol.models import Rol 
+from rol.models import Rol
 from django.contrib.auth.hashers import make_password
 
 class Usuario(models.Model):
@@ -16,5 +16,3 @@ class Usuario(models.Model):
     
     def __str__(self):
         return self.nombre_usuario
-    
-    
