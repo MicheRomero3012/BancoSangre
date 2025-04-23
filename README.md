@@ -1,174 +1,167 @@
-# 🩸 Manual de Instalación y Configuración del Proyecto BancoSangre
+# 🩸 Sistema de Gestión de Donadores de Sangre
 
 ---
 
-## 1. Clonación del Repositorio con Todas las Ramas
+## 🚀 Guía de Configuración del Proyecto
 
-### Clonar el repositorio con todas sus ramas remotas
+### 🔁 1. Clonación del Repositorio
 
+```bash
+# Clona el repositorio
+git clone <url_del_repositorio>
 
-git clone --branch main https://github.com/MicheRomero3012/BancoSangre.git
-
-    Esto descarga el repositorio y te coloca directamente en la rama main.
-
-Verificar las ramas disponibles
-
+# Lista todas las ramas disponibles
 git branch -a
 
-    Muestra las ramas locales y remotas (remotes/origin/...).
+# Cambia a la rama de trabajo
+git checkout <nombre_rama>
+```
 
-Cambiar a otra rama
+---
 
-git checkout frontend
+### 🐍 2. Configuración del Entorno Virtual e Instalación de Dependencias
 
-    Cambia tu rama activa a frontend.
+> ⚠️ Esto solo es necesario después de hacer un `pull` del repositorio remoto.
 
-Actualizar las ramas remotas
-
-git fetch
-
-    Obtiene las últimas actualizaciones del repositorio remoto.
-
-2. Creación del Entorno Virtual
-En Windows
-
+```bash
+# Crear entorno virtual
 python -m venv venv
+
+# Activar entorno virtual
+# En Windows:
 venv\Scripts\activate
-
-En Ubuntu
-
-python3 -m venv venv
+# En macOS/Linux:
 source venv/bin/activate
 
-Instalar las dependencias
-
+# Instalar requerimientos
 pip install -r requirements.txt
+```
 
-3. Instalación de PostgreSQL y psycopg2
+---
 
-pip install psycopg2
+### 🗂️ 3. Migraciones de la Base de Datos
 
-4. Configuración de la Base de Datos bancodb en PostgreSQL
-Desde SQL Shell (psql):
+Ejecuta las migraciones **en este orden** para que todo funcione correctamente:
 
-    Server: localhost
-
-    Username: postgres
-
-    Password: (tu contraseña)
-
-CREATE DATABASE bancodb;
-\c bancodb
-\dt
-
-5. Configuración del Proyecto en Django
-
-En bancoSangre/settings.py, configura la conexión a PostgreSQL:
-
-DATABASES = {
-   'default': {
-       'ENGINE': 'django.db.backends.postgresql',
-       'NAME': 'bancodb',
-       'USER': 'postgres',
-       'PASSWORD': '689447',
-       'HOST': 'localhost',
-       'PORT': '5432',
-   }
-}
-
-6. Aplicar Migraciones y Crear Roles por Defecto
-Crear y aplicar migraciones
-
-python manage.py makemigrations
+```bash
+python manage.py migrate rol
+python manage.py migrate usuario
+python manage.py migrate municipio
+python manage.py migrate colonia
+python manage.py migrate coordenada
+python manage.py migrate direccion
+python manage.py migrate donador
 python manage.py migrate
+```
 
-Ejecutar el script que crea los roles por defecto
+#### 🧹 Nota: Si necesitas borrar y crear una nueva base de datos desde `psql`:
 
-python script_roles.py
+```bash
+# Entra a psql
+psql
 
-    Este script crea los roles "administrador" y "donador" automáticamente.
-    Si ya existen, no los duplicará.
+# Lista las bases de datos
+\l
 
-7. Creación del Superusuario Administrador
+# Borra la base de datos existente
+DROP DATABASE nombre_base;
 
-Para poder generar tokens y realizar acciones administrativas, sigue estos pasos:
-Crear el Superusuario Administrador desde el Shell de Django
+# Crea una nueva base de datos
+CREATE DATABASE nombre_base;
 
-    Abre el shell de Django:
+# Verifica que se haya creado
+\l
+```
 
+---
+
+### 🛡️ 4. Creación de Roles
+
+```bash
+# Abre la consola de Django
 python manage.py shell
+```
 
-Dentro del shell, ejecuta el siguiente código para crear un superusuario administrador, asignarle el rol de administrador y generar el token de acceso para la API:
+Dentro de la consola de Python (todo lo de color mostaza se escribe aquí):
 
-from usuario.models import Usuario
+```python
 from rol.models import Rol
-from rest_framework.authtoken.models import Token
 
-# Crear o obtener el rol de administrador
-rol_admin, creado = Rol.objects.get_or_create(nombre="Administrador")
+# Crear roles
+admin_role = Rol.objects.create(nombre='admin', permisos=['create', 'read', 'update', 'delete'])
+donador_role = Rol.objects.create(nombre='donador', permisos=['read', 'create'])
 
-# Crear el superusuario (ajusta nombre, correo y contraseña)
-superusuario = Usuario.objects.create(
-    nombre_usuario="admin",
-    correo="admin@example.com",
-    contraseña="admin123",  # Tu modelo se encargará de encriptarla automáticamente
-    sexo="M",
-    rol=rol_admin
-)
+# Verificar usuario y sus permisos
+from usuario.models import Usuario
+usuario = Usuario.objects.get(correo='dalia@gmail.com')
+print(f"Nombre de usuario: {usuario.nombre_usuario}")
+print(f"Rol del usuario: {usuario.rol.nombre}")
+print(f"Permisos del rol: {usuario.rol.permisos}")
 
-# Generar el token para el superusuario
-token, creado = Token.objects.get_or_create(user=superusuario)
+# Listar todos los roles
+Rol.objects.all()
+```
 
-# Mostrar el token generado
-print(f"✅ Superusuario creado con token:\n🔑 {token.key}")
+👉 Para salir de la consola:
+```
+CTRL + Z y ENTER
+```
 
-Esto creará un usuario con el nombre admin, el correo admin@example.com y la contraseña admin123. Recuerda ajustar estos valores según tus necesidades.
+---
 
-Al finalizar, el sistema generará un token que se mostrará en la terminal, el cual puedes usar para autenticarte en la API con Postman o cualquier otra herramienta.
+### 🧑‍💻 5. Creación del Superusuario
 
-Para salir del shell, simplemente ejecuta:
+```bash
+# Crear superusuario
+python manage.py createsuperuser
+```
 
-    exit()
+> 📌 Usa estos datos recomendados:
 
-Con esto, ya tendrás un superusuario administrador creado con el rol adecuado y listo para acceder a las funcionalidades administrativas de la API, además de contar con un token de autenticación.
+- **Correo:** `admin@gmail.com`  
+- **Usuario:** `admin`  
+- **Contraseña:** `admin1234`  
+- **Rol:** `1`  
 
-8. Ejecutar el Proyecto
+#### 🔑 Generar Token JWT
 
+```python
+from usuario.models import Usuario
+from rest_framework_simplejwt.tokens import RefreshToken
+
+usuario = Usuario.objects.get(correo='admin@gmail.com')
+refresh = RefreshToken.for_user(usuario)
+
+print(f'Refresh Token: {refresh}')
+print(f'Access Token: {refresh.access_token}')
+```
+
+---
+
+### ▶️ 6. Ejecutar el Proyecto
+
+```bash
 python manage.py runserver
+```
 
-    El proyecto estará disponible en:
-    http://127.0.0.1:8000/
+---
 
-9. Pruebas de la API
+### 📫 7. Verificación con Postman
 
-Accede con tu navegador o Postman a:
+1. Abre Postman y ve a la pestaña **Authorization**.
+2. Selecciona `Bearer Token` y pega el `Access Token` generado.
+3. Realiza tus peticiones a las rutas protegidas.
 
-    Usuarios:
-    http://127.0.0.1:8000/api/usuarios/
+```python
+from usuario.models import Usuario
 
-    Donadores:
-    http://127.0.0.1:8000/api/donadores/
+usuario = Usuario.objects.get(correo='dalia@gmail.com')
+print(f"Nombre de usuario: {usuario.nombre_usuario}")
+print(f"Rol del usuario: {usuario.rol.nombre}")
+print(f"Permisos del rol: {usuario.rol.permisos}")
+```
 
-    Los permisos funcionan de la siguiente forma:
+---
 
-        Donadores: Solo pueden ver y registrar datos (GET y POST).
 
-        Administradores: Pueden ver, crear, editar y eliminar.
-
-10. Verificar Roles y Permisos
-
-En el admin de Django (/admin):
-
-    Asegúrate de que los usuarios tienen asignado el rol adecuado (donador o administrador).
-
-    Verifica que los permisos estén funcionando según el tipo de rol.
-
-11. Comandos útiles
-Salir del shell de Django
-
-exit()
-
-O Ctrl + D (Linux/Mac) | Ctrl + Z + Enter (Windows)
-
-    📌 Manual de instalación y configuración del Proyecto BancoSangre.
     Desarrollado por el equipo 3 — @MicheRomero3012 & dalia20031994 💻❤️
