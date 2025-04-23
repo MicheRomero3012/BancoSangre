@@ -82,7 +82,7 @@ CREATE DATABASE nombre_base;
 python manage.py shell
 ```
 
-Dentro de la consola de Python (todo lo de color mostaza se escribe aquí):
+Dentro de la consola de Python:
 
 ```python
 from rol.models import Rol
@@ -164,4 +164,4 @@ print(f"Permisos del rol: {usuario.rol.permisos}")
 ---
 
 
-    Desarrollado por el equipo 3 — @MicheRomero3012 & dalia20031994 💻❤️
+    Desarrollado por el equipo 3 — @MicheRomero3012 & @dalia20031994 💻❤️
