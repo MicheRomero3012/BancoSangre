@@ -175,8 +175,8 @@ AUTH_USER_MODEL = 'usuario.Usuario'
 from datetime import timedelta
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(hours=12),  # Esto hará que el token expire en 1 hora
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),  # Esto hará que el refresh token expire en 7 días
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=360),  # Esto hará que el token expire en 360 horas
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=30),  # Esto hará que el refresh token expire en 30 días
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
 }
