@@ -31,14 +31,15 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     nombre_usuario = models.CharField(max_length=30, unique=True)
     correo = models.EmailField(unique=True)
     sexo = models.CharField(max_length=1, choices=[('M', 'Masculino'), ('F', 'Femenino')])
-    rol = models.ForeignKey('rol.Rol', on_delete=models.CASCADE, default=1)  # Asignar un valor por defecto para rol
+    rol = models.ForeignKey('rol.Rol', on_delete=models.CASCADE, default=1)  
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
 
     objects = UsuarioManager()
 
-    USERNAME_FIELD = 'correo'
-    REQUIRED_FIELDS = ['nombre_usuario']
+    USERNAME_FIELD = 'nombre_usuario'
+    REQUIRED_FIELDS = ['correo']
+
 
     def __str__(self):
         return self.nombre_usuario
