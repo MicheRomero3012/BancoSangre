@@ -129,11 +129,21 @@ python manage.py createsuperuser
 from usuario.models import Usuario
 from rest_framework_simplejwt.tokens import RefreshToken
 
-usuario = Usuario.objects.get(correo='admin@gmail.com')
+# Obtener usuario por correo
+usuario = Usuario.objects.get(correo='admin@gmail.com') #cambiar correo al usuario deseado 
+
+# Generar tokens JWT
 refresh = RefreshToken.for_user(usuario)
 
+# Imprimir tokens
 print(f'Refresh Token: {refresh}')
 print(f'Access Token: {refresh.access_token}')
+
+# Imprimir información del usuario
+print(f'ID: {usuario.id}')
+print(f'Nombre de usuario: {usuario.nombre_usuario}')
+print(f'Rol: {usuario.rol}')  #rol solo hay admin y donador
+
 ```
 
 ---
